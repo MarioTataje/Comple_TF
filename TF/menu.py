@@ -4,16 +4,22 @@ from pygame.locals import (
     K_ESCAPE,
 )
 from standby import Standby
+from instructions import Instructions
 
 
-def exitgame():
+def exitGame():
     pygame.quit()
     quit()
 
 
-def startgame():
+def startGame():
     standby = Standby(800, 600)
     standby.run(True)
+
+
+def instructionsGame():
+    instructions = Instructions(800, 600)
+    instructions.run(True)
 
 
 class Test:
@@ -40,18 +46,18 @@ class Test:
         if x + width > mouse[0] > x and y + height > mouse[1] > y:
             pygame.draw.rect(self.screen, self.black, ((x - 10) - 2, (y - 10) - 2, (width + 20) + 4, (height + 20) + 4), 0)
             pygame.draw.rect(self.screen, self.newgray, (x - 10, y - 10, width + 20, height + 20))
-            word = pygame.font.SysFont('comicsans', 40)
+            word = pygame.font.SysFont('comicsans', 30)
 
             if click[0] == 1 and action is not None:
                 action()
         else:
             pygame.draw.rect(self.screen, self.black, (x - 2, y - 2, width + 4, height + 4), 0)
             pygame.draw.rect(self.screen, self.gray, (x, y, width, height))
-            word = pygame.font.SysFont('comicsans', 30)
+            word = pygame.font.SysFont('comicsans', 25)
 
-        textsurf, textrect = self.text_objects(text, word)
-        textrect.center = ((x + int((width / 2))), (y + int((height / 2))))
-        self.screen.blit(textsurf, textrect)
+        textSurf, textRect = self.text_objects(text, word)
+        textRect.center = ((x + int((width / 2))), (y + int((height / 2))))
+        self.screen.blit(textSurf, textRect)
 
     def run(self, _running):
         while _running:
@@ -61,8 +67,9 @@ class Test:
                     if event.key == K_ESCAPE:
                         _running = False
 
-            self.button(330, 400, 130, 60, 'Play', startgame)
-            self.button(330, 500, 130, 60, 'Exit', exitgame)
+            self.button(330, 380, 130, 40, 'Play', startGame)
+            self.button(330, 440, 130, 40, 'Instructions', instructionsGame)
+            self.button(330, 500, 130, 40, 'Exit', exitGame)
             pygame.display.update()
 
         pygame.quit()
