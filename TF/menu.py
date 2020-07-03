@@ -18,8 +18,8 @@ def startGame():
 
 
 def instructionsGame():
-    instructions = Instructions(800, 600)
-    instructions.run(True)
+    instructionsView = Instructions(800, 600)
+    instructionsView.run(True)
 
 
 class Test:
@@ -31,13 +31,13 @@ class Test:
         self.tittle = pygame.display.set_caption("Ubongo")
         self.image = pygame.image.load("ubongo.png")
         self.gray = (128, 128, 128)
-        self.newgray = (55, 118, 118)
+        self.newGray = (55, 118, 118)
         self.white = (255, 255, 255)
         self.black = (0, 0, 0)
 
     def text_objects(self, text, font):
-        textsurface = font.render(text, True, self.white)
-        return textsurface, textsurface.get_rect()
+        textSurface = font.render(text, True, self.white)
+        return textSurface, textSurface.get_rect()
 
     def button(self, x, y, width, height, text, action=None):
         mouse = pygame.mouse.get_pos()
@@ -45,7 +45,7 @@ class Test:
 
         if x + width > mouse[0] > x and y + height > mouse[1] > y:
             pygame.draw.rect(self.screen, self.black, ((x - 10) - 2, (y - 10) - 2, (width + 20) + 4, (height + 20) + 4), 0)
-            pygame.draw.rect(self.screen, self.newgray, (x - 10, y - 10, width + 20, height + 20))
+            pygame.draw.rect(self.screen, self.newGray, (x - 10, y - 10, width + 20, height + 20))
             word = pygame.font.SysFont('comicsans', 30)
 
             if click[0] == 1 and action is not None:
