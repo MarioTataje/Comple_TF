@@ -359,7 +359,10 @@ class Standby:
                 self.start_round()
 
             if self.count == 31:
+                self.computer_thinking = False
+                self.computer_found_solution = False
                 self.player_tiles = []
+                self.computer_tiles = []
 
             if not self.computer_thinking and not self.computer_found_solution:
                 self.computer_thinking = True;
