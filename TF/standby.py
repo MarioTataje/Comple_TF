@@ -54,27 +54,30 @@ class Standby:
         self.Verify = True
         self.diceImage = dice.dice
 
-        target = [
-            [1, 1, 1, 0, 0],
-            [1, 1, 1, 1, 1],
-            [0, 1, 1, 1, 1],
-            [0, 1, 1, 1, 0],
-            [1, 1, 1, 1, 1]
-         ]
-
+    def drawGrid(self, matrix, offsetX, offsetY):
         sideLength = 40
         row = 0
         column = 0
 
-        for matrixRow in target:
+        pygame.draw.rect(
+            self.screen,
+            self.white,
+            (column * sideLength + offsetX, row * sideLength + offsetY, sideLength * len(matrix[0]), sideLength * len(matrix)),
+            0
+        )
+
+        for matrixRow in matrix:
             for element in matrixRow:
                 if element != 0:
-                    pygame.draw.rect(self.screen, self.red, (column * sideLength, row * sideLength , sideLength, sideLength), 2)
+                    pygame.draw.rect(
+                        self.screen,
+                        self.gray,
+                        (column * sideLength + offsetX, row * sideLength + offsetY, sideLength, sideLength),
+                        2
+                    )
                 column = column + 1
             column = 0
             row = row + 1
-
-
 
     def run(self, _running):
         while _running:
@@ -84,9 +87,20 @@ class Standby:
                     if event.key == K_ESCAPE:
                         _running = False
 
-            self.button(15, 20, 100, 40, 'Throw', self.throwDice)
+            self.button((self.screen_width * 0.5) - 50, 20, 100, 40, 'Tirar', self.throwDice)
+
+            matrix = [
+                [1, 1, 1, 0, 0],
+                [1, 1, 1, 1, 1],
+                [0, 1, 1, 1, 1],
+                [0, 1, 1, 1, 0],
+                [1, 1, 1, 1, 1]
+            ]
+            self.drawGrid(matrix, self.screen_width * 0.1, self.screen_height * 0.3)
+            self.drawGrid(matrix, self.screen_width * 0.65, self.screen_height * 0.3)
+
             if self.Verify:
-                self.screen.blit(self.diceImage, (140, 5))
+                self.screen.blit(self.diceImage, ((self.screen_width * 0.50) - 35, self.screen_height * 0.15))
             pygame.display.update()
 
         pygame.quit()
