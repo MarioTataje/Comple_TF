@@ -348,6 +348,9 @@ class Standby:
                         self.machineScoreFont = self.myFont.render(str(self.machineScore), 1, self.white)
                         self.computer_won = False
                         self.VerifyMachineWin = False
+                    if self.count == 31:
+                        self.computer_thinking = False
+                        self.computer_found_solution = False
 
             self.button((self.screen_width * 0.5) - 50, 20, 100, 40, 'Tirar', self.throwDice)
             self.button(50, 20, 100, 40, 'Gane', self.winPointPlayer)
@@ -359,8 +362,6 @@ class Standby:
                 self.start_round()
 
             if self.count == 31:
-                self.computer_thinking = False
-                self.computer_found_solution = False
                 self.player_tiles = []
                 self.computer_tiles = []
 
