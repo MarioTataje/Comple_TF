@@ -78,6 +78,7 @@ class Standby:
         self.n = dice.drawDice()
         self.Verify = True
         self.diceImage = dice.dice
+        self.VerifyDice = True
 
     def drawGrid(self, matrix, offsetX, offsetY):
         sideLength = 40
