@@ -1,4 +1,5 @@
 import pygame
+import shapes
 from pygame.locals import (
     KEYDOWN,
     K_ESCAPE
@@ -19,6 +20,7 @@ class Standby:
         self.newGray = (55, 118, 118)
         self.white = (255, 255, 255)
         self.red = (255, 0, 0)
+        self.green = (0, 255, 0)
         self.black = (0, 0, 0)
         self.Verify = False
         self.diceImage = 0
@@ -79,6 +81,20 @@ class Standby:
             column = 0
             row = row + 1
 
+    def drawShape(self, shape_id, offset_x, offset_y):
+        sideLength = 40
+
+        shape = shapes.generate_shape(shape_id);
+        for point in shape:
+            column = point[0]
+            row = point[1]
+            pygame.draw.rect(
+                        self.screen,
+                        self.green,
+                        (column * sideLength + offset_x, row * sideLength + offset_y, sideLength, sideLength),
+                        0
+                    )
+
     def run(self, _running):
         while _running:
             self.screen.blit(self.scaledImage, (0, 0))
@@ -98,6 +114,9 @@ class Standby:
             ]
             self.drawGrid(matrix, self.screen_width * 0.1, self.screen_height * 0.3)
             self.drawGrid(matrix, self.screen_width * 0.65, self.screen_height * 0.3)
+
+            self.drawShape(5, self.screen_width * 0.1, self.screen_height * 0.8)
+
 
             if self.Verify:
                 self.screen.blit(self.diceImage, ((self.screen_width * 0.50) - 35, self.screen_height * 0.15))
