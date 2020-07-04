@@ -34,6 +34,10 @@ class Standby:
         self.blue = (0, 0, 255)
         self.black = (0, 0, 0)
         self.Verify = False
+        self.count = 11
+        self.myFont = pygame.font.SysFont('comicsans', 30)
+        self.countFont = self.myFont.render(str(self.count), 1, self.white)
+        self.VerifyDice = False
         self.side_length = 40
         self.diceImage = 0
         self.n = 0
