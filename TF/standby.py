@@ -18,10 +18,12 @@ from tile import Tile
 
 
 class Standby:
-    def __init__(self, width, height):
+    def __init__(self, width, height, target, pieces):
         pygame.init()
         self.screen_width = width
         self.screen_height = height
+        self.target = target
+        self.pieces = pieces
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
         self.tittle = pygame.display.set_caption("Standby")
         self.image = pygame.image.load("Standby.png")
@@ -125,24 +127,60 @@ class Standby:
             row = row + 1
 
     def solve_puzzle(self):
-        print('hola')
-        matrix = [
-            [0, 0, 1, 0, 0],
-            [0, 0, 1, 1, 1],
-            [0, 1, 1, 1, 1],
-            [0, 1, 1, 1, 0],
-            [1, 1, 1, 1, 1]
-        ]
+        self.solution = computer_player.Tetris(self.target, self.pieces);
 
         sleepTime = random.randint(10, 30)
         print('Sleeping for: ' + str(sleepTime));
         time.sleep(sleepTime)
 
-        limit_tetris = {1: 1, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 1, 9: 0, 10: 0, 11: 0, 12: 0, 13: 1, 14: 0, 15: 0,
-                        16: 0, 17: 0, 18: 1, 19: 0}
-
-        self.solution = computer_player.Tetris(matrix, limit_tetris);
+        print('Found solution')
         self.computer_found_solution = True;
+
+    def create_empty_solution(self):
+        empty_solution = [];
+
+        for row in self.target:
+            new_row = [];
+            for column in row:
+                new_row.append(0);
+            empty_solution.append(new_row);
+
+        return empty_solution;
+
+    def check_won(self,current_tiles,origin_x, origin_y):
+        #no podemos verificar quien gano hasta que tengamos solucion
+        if(self.solution == None):
+            return False;
+
+        current_solution = self.create_empty_solution();
+
+        for tile in current_tiles:
+            occupied_tiles = tile.return_occupied_tiles(origin_x, origin_y)
+            tile_number = tile.get_tile_number()
+            for occupied in occupied_tiles:
+                x = int(occupied[0])
+                y = int(occupied[1])
+                if(x >= len(self.target[0]) or x < 0):
+                    return False;
+
+                if(y >= len(self.target) or y < 0):
+                    return False;
+
+                current_solution[y][x] = tile_number
+
+        row = 0;
+        column = 0;
+
+        for solution_row in self.solution:
+            for solution_column in solution_row:
+                matching_shape_id = current_solution[row][column];
+                if(matching_shape_id != solution_column[0]):
+                    return False;
+                column = column+1;
+            column = 0;
+            row = row+1;
+
+        return True;
 
     def fire_and_forget(self, task, *args, **kwargs):
         loop = asyncio.get_event_loop()
@@ -185,34 +223,23 @@ class Standby:
             self.button((self.screen_width * 0.5) - 50, 20, 100, 40, 'Tirar', self.throwDice)
             self.button(50, 20, 100, 40, 'Gane', self.winPointPlayer)
 
-            matrix = [
-                [0, 0, 1, 0, 0],
-                [0, 0, 1, 1, 1],
-                [0, 1, 1, 1, 1],
-                [0, 1, 1, 1, 0],
-                [1, 1, 1, 1, 1]
-            ]
-
             grid_origin_player_x = 1
             grid_origin_player_y = 4
             grid_origin_computer_x = 17
             grid_origin_computer_y = 4
 
-            self.drawGrid(matrix, grid_origin_player_x * self.side_length, grid_origin_player_y * self.side_length)
-            self.drawGrid(matrix, grid_origin_computer_x * self.side_length, grid_origin_computer_y * self.side_length)
-
-            limit_tetris = {1: 1, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 1, 9: 0, 10: 0, 11: 0, 12: 0, 13: 1, 14: 0,
-                            15: 0, 16: 0, 17: 0, 18: 1, 19: 0}
+            self.drawGrid(self.target, grid_origin_player_x * self.side_length, grid_origin_player_y * self.side_length)
+            self.drawGrid(self.target, grid_origin_computer_x * self.side_length, grid_origin_computer_y * self.side_length)
 
             if len(self.player_tiles) == 0:
                 shape_offset_x = grid_origin_player_x * self.side_length
                 distance_shape = 4 * self.side_length
-                for key, value in limit_tetris.items():
+                for key, value in self.pieces.items():
                     if value != 0:
                         shape = shapes.generate_shape(key);
-                        # get color from shape colors
-                        new_tile = Tile(self.screen, shape, self.green, shape_offset_x,
-                                        (grid_origin_player_y + 10) * self.side_length, self.side_length)
+                        color = shapes.get_shape_color(key);
+                        new_tile = Tile(self.screen, shape, color, shape_offset_x,
+                                        (grid_origin_player_y + 10) * self.side_length, self.side_length, key)
                         new_tile.draw_shape();
                         shape_offset_x = shape_offset_x + distance_shape
                         self.player_tiles.append(new_tile);
@@ -221,16 +248,21 @@ class Standby:
                     tile.draw_shape();
 
             if not self.computer_found_solution:
-                shape_offset_x = grid_origin_computer_x * self.side_length
-                distance_shape = 4 * self.side_length
-                for key, value in limit_tetris.items():
-                    if value != 0:
-                        shape = shapes.generate_shape(key);
-                        # get color from shape colors
-                        new_tile = Tile(self.screen, shape, self.red, shape_offset_x,
-                                        (grid_origin_player_y + 10) * self.side_length, self.side_length)
-                        new_tile.draw_shape();
-                        shape_offset_x = shape_offset_x + distance_shape
+                if(len(self.computer_tiles) == 0):
+                    shape_offset_x = grid_origin_computer_x * self.side_length
+                    distance_shape = 4 * self.side_length
+                    for key, value in self.pieces.items():
+                        if value != 0:
+                            shape = shapes.generate_shape(key);
+                            color = shapes.get_shape_color(key);
+                            new_tile = Tile(self.screen, shape, color, shape_offset_x,
+                                            (grid_origin_player_y + 10) * self.side_length, self.side_length,key)
+                            new_tile.draw_shape();
+                            shape_offset_x = shape_offset_x + distance_shape
+                            self.computer_tiles.append(new_tile);
+                else:
+                    for tile in self.computer_tiles:
+                        tile.draw_shape();
             else:
                 offsetX = self.side_length * grid_origin_computer_x;
                 offsetY = self.side_length * grid_origin_computer_y;
@@ -255,6 +287,14 @@ class Standby:
             if not self.computer_thinking and not self.computer_found_solution:
                 self.computer_thinking = True;
                 self.fire_and_forget(self.solve_puzzle);
+
+            #Check if won
+            if(self.check_won(self.player_tiles, grid_origin_player_x, grid_origin_player_y)):
+                print('Player won');
+            
+            if(self.check_won(self.computer_tiles, grid_origin_computer_x, grid_origin_computer_y)):
+                print('Computer won');
+
 
             if self.Verify:
                 self.screen.blit(self.diceImage, ((self.screen_width * 0.50) - 35, self.screen_height * 0.15))
