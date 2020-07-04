@@ -36,11 +36,15 @@ class Standby:
         self.Verify = False
         self.round = 0
         self.roundText = 'Ronda : '
-        self.count = 11
+        self.playerScoreText = 'Puntaje Jugador : '
+        self.machineScoreText = 'Puntaje Maquina : '
+        self.count = 21
         self.myFont = pygame.font.SysFont('comicsans', 30)
         self.roundFont = self.myFont.render(str(self.round), 1, self.white)
         self.roundTextFont = self.myFont.render(self.roundText, 1, self.white)
         self.countFont = self.myFont.render(str(self.count), 1, self.white)
+        self.playerScoreTextFont = self.myFont.render(self.playerScoreText, 1, self.white)
+        self.machineScoreTextFont = self.myFont.render(self.machineScoreText, 1, self.white)
         self.VerifyDice = False
         self.clock = pygame.time.Clock()
         self.side_length = 40
@@ -165,7 +169,7 @@ class Standby:
                         self.count -= 1
                         self.countFont = self.myFont.render(str(self.count), 1, self.white)
                         if self.count == -1:
-                            self.count = 11
+                            self.count = 21
                             self.VerifyDice = False
                             self.round += 1
                             self.roundFont = self.myFont.render(str(self.round), 1, self.white)
@@ -249,6 +253,8 @@ class Standby:
                 self.screen.blit(self.countFont, (1000, 35))
             self.screen.blit(self.roundTextFont, (1100, 35))
             self.screen.blit(self.roundFont, (1200, 35))
+            self.screen.blit(self.playerScoreTextFont, (50, 100))
+            self.screen.blit(self.machineScoreTextFont, (800, 100))
             self.clock.tick(60)
             pygame.display.update()
 
