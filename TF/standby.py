@@ -156,9 +156,9 @@ class Standby:
         return empty_solution;
 
     def computer_move_tiles(self):
-        if(self.computer_won):
+        if (self.computer_won):
             return;
-        
+
         time.sleep(0.5);
 
         row = 0
@@ -172,48 +172,48 @@ class Standby:
                 if shape_id != 0 and not shape_id in shapes_moved:
                     for tile in self.computer_tiles:
                         tile_number = tile.get_tile_number()
-                        if(tile_number == shape_id):
+                        if (tile_number == shape_id):
                             shapes_moved.append(shape_id)
-                            occupied_tiles = tile.return_occupied_tiles(self.grid_origin_computer_x, self.grid_origin_computer_y)
+                            occupied_tiles = tile.return_occupied_tiles(self.grid_origin_computer_x,
+                                                                        self.grid_origin_computer_y)
                             current_left_top = occupied_tiles[0]
                             current_smallest_y = current_left_top[1]
                             current_smallest_x = current_left_top[0]
-                            
+
                             for point in occupied_tiles:
-                                if(point[1] < current_smallest_y):
+                                if (point[1] < current_smallest_y):
                                     current_left_top = point;
                                     current_smallest_y = current_left_top[1]
                                     current_smallest_x = current_left_top[0]
                                 else:
-                                    if(point[1] == current_smallest_y):
-                                        if(point[0] < current_smallest_x):
+                                    if (point[1] == current_smallest_y):
+                                        if (point[0] < current_smallest_x):
                                             current_left_top = point;
                                             current_smallest_y = current_left_top[1]
                                             current_smallest_x = current_left_top[0]
 
-                            
-                            if(current_left_top[1] > row):
-                                tile.move_shape(0,-1)
-                                self.computer_move_tiles();
-                                return;
-                            
-                            if(current_left_top[0] > column):
-                                tile.move_shape(-1,0)
+                            if (current_left_top[1] > row):
+                                tile.move_shape(0, -1)
                                 self.computer_move_tiles();
                                 return;
 
-                            if(current_left_top[0] < column):
-                                tile.move_shape(1,0)
+                            if (current_left_top[0] > column):
+                                tile.move_shape(-1, 0)
                                 self.computer_move_tiles();
                                 return;
 
-                column = column+1;
+                            if (current_left_top[0] < column):
+                                tile.move_shape(1, 0)
+                                self.computer_move_tiles();
+                                return;
+
+                column = column + 1;
             column = 0;
             row = row + 1;
 
-    def check_won(self,current_tiles,origin_x, origin_y):
-        #no podemos verificar quien gano hasta que tengamos solucion
-        if(self.solution == None):
+    def check_won(self, current_tiles, origin_x, origin_y):
+        # no podemos verificar quien gano hasta que tengamos solucion
+        if (self.solution == None):
             return False;
 
         current_solution = self.create_empty_solution();
@@ -224,10 +224,10 @@ class Standby:
             for occupied in occupied_tiles:
                 x = int(occupied[0])
                 y = int(occupied[1])
-                if(x >= len(self.target[0]) or x < 0):
+                if (x >= len(self.target[0]) or x < 0):
                     return False;
 
-                if(y >= len(self.target) or y < 0):
+                if (y >= len(self.target) or y < 0):
                     return False;
 
                 current_solution[y][x] = tile_number
@@ -238,11 +238,11 @@ class Standby:
         for solution_row in self.solution:
             for solution_column in solution_row:
                 matching_shape_id = current_solution[row][column];
-                if(matching_shape_id != solution_column[0]):
+                if (matching_shape_id != solution_column[0]):
                     return False;
-                column = column+1;
+                column = column + 1;
             column = 0;
-            row = row+1;
+            row = row + 1;
 
         return True;
 
@@ -290,7 +290,8 @@ class Standby:
                     if self.VerifyMachineWin:
                         self.machineScore += 1
                         self.machineScoreFont = self.myFont.render(str(self.machineScore), 1, self.white)
-                        self.VerifyMachineWin = True
+                        self.computer_won = False
+                        self.VerifyMachineWin = False
 
             self.button((self.screen_width * 0.5) - 50, 20, 100, 40, 'Tirar', self.throwDice)
             self.button(50, 20, 100, 40, 'Gane', self.winPointPlayer)
@@ -299,7 +300,8 @@ class Standby:
             grid_origin_player_y = 4
 
             self.drawGrid(self.target, grid_origin_player_x * self.side_length, grid_origin_player_y * self.side_length)
-            self.drawGrid(self.target, self.grid_origin_computer_x * self.side_length, self.grid_origin_computer_y * self.side_length)
+            self.drawGrid(self.target, self.grid_origin_computer_x * self.side_length,
+                          self.grid_origin_computer_y * self.side_length)
 
             if len(self.player_tiles) == 0:
                 shape_offset_x = grid_origin_player_x * self.side_length
@@ -317,8 +319,7 @@ class Standby:
                 for tile in self.player_tiles:
                     tile.draw_shape();
 
-
-            if(len(self.computer_tiles) == 0):
+            if len(self.computer_tiles) == 0:
                 shape_offset_x = self.grid_origin_computer_x * self.side_length
                 distance_shape = 4 * self.side_length
                 for key, value in self.pieces.items():
@@ -326,16 +327,16 @@ class Standby:
                         shape = shapes.generate_shape(key);
                         color = shapes.get_shape_color(key);
                         new_tile = Tile(self.screen, shape, color, shape_offset_x,
-                                        (grid_origin_player_y + 10) * self.side_length, self.side_length,key)
+                                        (grid_origin_player_y + 10) * self.side_length, self.side_length, key)
                         new_tile.draw_shape();
                         shape_offset_x = shape_offset_x + distance_shape
                         self.computer_tiles.append(new_tile);
             else:
                 for tile in self.computer_tiles:
                     tile.draw_shape();
-            #if not self.computer_found_solution:
-                
-            #else:
+            # if not self.computer_found_solution:
+
+            # else:
             #    offsetX = self.side_length * self.grid_origin_computer_x;
             #    offsetY = self.side_length * self.grid_origin_computer_y;
             #    row = 0
@@ -360,14 +361,16 @@ class Standby:
                 self.computer_thinking = True;
                 self.fire_and_forget(self.solve_puzzle);
 
-            #Check if won
-            if(self.check_won(self.player_tiles, grid_origin_player_x, grid_origin_player_y)):
+            # Check if won
+            if self.check_won(self.player_tiles, grid_origin_player_x, grid_origin_player_y):
                 print('Player won');
-            
-            if(self.check_won(self.computer_tiles, self.grid_origin_computer_x, self.grid_origin_computer_y)):
+
+            if self.check_won(self.computer_tiles, self.grid_origin_computer_x, self.grid_origin_computer_y):
                 print('Computer won');
                 self.computer_won = True;
 
+            if self.computer_won:
+                self.winPointMachine()
 
             if self.Verify:
                 self.screen.blit(self.diceImage, ((self.screen_width * 0.50) - 35, self.screen_height * 0.15))
