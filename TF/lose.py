@@ -12,7 +12,7 @@ class Lose:
         self.screen_height = height
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
         self.tittle = pygame.display.set_caption("Lose")
-        self.image = pygame.image.load("lose.png")
+        self.image = pygame.image.load("assets/lose.png")
         self.scaledImage = pygame.transform.scale(self.image, (self.screen_width, self.screen_height))
         self.gray = (128, 128, 128)
         self.newGray = (55, 118, 118)

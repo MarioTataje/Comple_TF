@@ -42,7 +42,7 @@ class Standby:
         self.pieces = pieces
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
         self.tittle = pygame.display.set_caption("Standby")
-        self.image = pygame.image.load("Standby.png")
+        self.image = pygame.image.load("assets/Standby.png")
         self.scaledImage = pygame.transform.scale(self.image, (self.screen_width, self.screen_height))
         self.gray = (128, 128, 128)
         self.newGray = (55, 118, 118)
