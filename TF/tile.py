@@ -2,8 +2,9 @@
 import pygame
 
 class Tile:
-    def __init__(self, screen, shape, color, initial_offset_x, initial_offset_y, side_length):
+    def __init__(self, screen, shape, color, initial_offset_x, initial_offset_y, side_length, number):
         self.screen = screen
+        self.tile_number = number
         self.shape = shape
         self.color = color
         self.offset_x = initial_offset_x
@@ -34,5 +35,22 @@ class Tile:
         self.offset_x = self.offset_x + move_x * self.side_length
         self.offset_y = self.offset_y + move_y * self.side_length
 
-    def return_occupied_tiles(self, matrix, matrix_x_origin, matrix_y_origin):
-        return ""
+    #devolvemos [[x,y],...]
+    def return_occupied_tiles(self, matrix_x_origin, matrix_y_origin):
+        points = []
+        border = 2;
+
+        offset_x_tiles = self.offset_x / self.side_length;
+        offset_y_tiles = self.offset_y / self.side_length;
+
+        for point in self.shape:
+            column = point[1]
+            row = point[0]
+            x = (column + offset_x_tiles) - matrix_x_origin
+            y = (row + offset_y_tiles) - matrix_y_origin
+            points.append([x,y])
+
+        return points
+
+    def get_tile_number(self):
+        return self.tile_number;

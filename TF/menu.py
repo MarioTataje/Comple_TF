@@ -14,7 +14,17 @@ def exitGame():
 
 def startGame():
     screen_dimensions = utils.get_screen_dimensions()
-    standby = Standby(screen_dimensions['width'], screen_dimensions['height'])
+    matrix = [
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 1, 1],
+                [0, 1, 1, 1, 1],
+                [0, 1, 1, 1, 0],
+                [1, 1, 1, 1, 1]
+            ]
+
+    pieces = {1: 1, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 1, 9: 0, 10: 0, 11: 0, 12: 0, 13: 1, 14: 0,
+                            15: 0, 16: 0, 17: 0, 18: 1, 19: 0}
+    standby = Standby(screen_dimensions['width'], screen_dimensions['height'], matrix, pieces)
     standby.run(True)
 
 
