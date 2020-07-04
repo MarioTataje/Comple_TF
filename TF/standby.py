@@ -2,9 +2,15 @@ import pygame
 import shapes
 from pygame.locals import (
     KEYDOWN,
-    K_ESCAPE
+    K_ESCAPE,
+    K_UP,
+    K_DOWN,
+    K_RIGHT,
+    K_LEFT,
+    K_SPACE
 )
 from dice import Dice
+from tile import Tile
 
 
 class Standby:
@@ -23,8 +29,13 @@ class Standby:
         self.green = (0, 255, 0)
         self.black = (0, 0, 0)
         self.Verify = False
+        self.side_length = 40
         self.diceImage = 0
         self.n = 0
+        self.playing = True
+        self.player_tiles = []
+        self.computer_tiles = []
+        self.selected_tile_index = 0
 
     def text_objects(self, text, font):
         textSurface = font.render(text, True, self.white)
@@ -102,14 +113,28 @@ class Standby:
             self.screen.blit(self.scaledImage, (0, 0))
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
-                    if event.key == K_ESCAPE:
-                        _running = False
+                    if(self.playing):
+                        selected_tile = self.player_tiles[self.selected_tile_index]
+                        if(event.key == K_UP):
+                            selected_tile.move_shape(0,-1);
+                        if(event.key == K_DOWN):
+                            selected_tile.move_shape(0,1);
+                        if(event.key == K_LEFT):
+                            selected_tile.move_shape(-1,0);
+                        if(event.key == K_RIGHT):
+                            selected_tile.move_shape(1,0);
+                        if(event.key == K_SPACE):
+                            self.selected_tile_index = self.selected_tile_index + 1;
+                            if(self.selected_tile_index == len(self.player_tiles)):
+                                self.selected_tile_index = 0;
+                            
+                    
 
             self.button((self.screen_width * 0.5) - 50, 20, 100, 40, 'Tirar', self.throwDice)
 
             matrix = [
-                [1, 1, 1, 0, 0],
-                [1, 1, 1, 1, 1],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 1, 1],
                 [0, 1, 1, 1, 1],
                 [0, 1, 1, 1, 0],
                 [1, 1, 1, 1, 1]
@@ -117,16 +142,22 @@ class Standby:
             self.drawGrid(matrix, self.screen_width * 0.1, self.screen_height * 0.3)
             self.drawGrid(matrix, self.screen_width * 0.65, self.screen_height * 0.3)
 
-            limit_tetris = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 1, 9: 0, 10: 0, 11: 0, 12: 0, 13: 1, 14: 0,
-                            15: 0, 16: 0, 17: 0, 18: 1, 19: 0}
+            limit_tetris = {1: 1, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 1, 9: 0, 10: 0, 11: 0, 12: 0, 13: 1, 14: 0, 15: 0, 16: 0, 17: 0, 18: 1, 19: 0}
 
-            shape_offset_x = self.screen_width*0.1
-            distance_shape = 5 * 40
-            for key,value in limit_tetris.items():
-                if value != 0:
-                    self.drawShape(key, shape_offset_x, self.screen_height * 0.8)
-                    shape_offset_x = shape_offset_x + distance_shape
-
+            if(len(self.player_tiles) == 0):
+                shape_offset_x = self.screen_width*0.1
+                distance_shape = 5 * 40
+                for key,value in limit_tetris.items():
+                    if value != 0:
+                        shape = shapes.generate_shape(key);
+                        #get color from shape colors 
+                        new_tile = Tile(self.screen, shape, self.green, shape_offset_x, self.screen_height * 0.8,self.side_length)
+                        new_tile.draw_shape();
+                        shape_offset_x = shape_offset_x + distance_shape
+                        self.player_tiles.append(new_tile);
+            else:
+                for tile in self.player_tiles:
+                    tile.draw_shape();
 
             if self.Verify:
                 self.screen.blit(self.diceImage, ((self.screen_width * 0.50) - 35, self.screen_height * 0.15))

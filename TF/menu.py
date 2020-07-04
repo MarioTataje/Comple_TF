@@ -5,7 +5,7 @@ from pygame.locals import (
 )
 from standby import Standby
 from instructions import Instructions
-
+import utils
 
 def exitGame():
     pygame.quit()
@@ -13,12 +13,14 @@ def exitGame():
 
 
 def startGame():
-    standby = Standby(800, 600)
+    screen_dimensions = utils.get_screen_dimensions()
+    standby = Standby(screen_dimensions['width'], screen_dimensions['height'])
     standby.run(True)
 
 
 def instructionsGame():
-    instructions = Instructions(800, 600)
+    screen_dimensions = utils.get_screen_dimensions()
+    instructions = Instructions(screen_dimensions['width'], screen_dimensions['height'])
     instructions.run(True)
 
 
@@ -75,6 +77,7 @@ class Test:
         pygame.quit()
         quit()
 
+screen_dimensions = utils.get_screen_dimensions()
 
-test = Test(800, 600)
+test = Test(screen_dimensions['width'], screen_dimensions['height'])
 test.run(True)
