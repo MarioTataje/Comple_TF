@@ -34,8 +34,12 @@ class Standby:
         self.blue = (0, 0, 255)
         self.black = (0, 0, 0)
         self.Verify = False
+        self.round = 0
+        self.roundText = 'Ronda : '
         self.count = 11
         self.myFont = pygame.font.SysFont('comicsans', 30)
+        self.roundFont = self.myFont.render(str(self.round), 1, self.white)
+        self.roundTextFont = self.myFont.render(self.roundText, 1, self.white)
         self.countFont = self.myFont.render(str(self.count), 1, self.white)
         self.VerifyDice = False
         self.clock = pygame.time.Clock()
@@ -163,6 +167,8 @@ class Standby:
                         if self.count == -1:
                             self.count = 11
                             self.VerifyDice = False
+                            self.round += 1
+                            self.roundFont = self.myFont.render(str(self.round), 1, self.white)
 
             self.button((self.screen_width * 0.5) - 50, 20, 100, 40, 'Tirar', self.throwDice)
 
@@ -241,6 +247,8 @@ class Standby:
                 self.screen.blit(self.diceImage, ((self.screen_width * 0.50) - 35, self.screen_height * 0.15))
             if self.VerifyDice:
                 self.screen.blit(self.countFont, (1000, 35))
+            self.screen.blit(self.roundTextFont, (1100, 35))
+            self.screen.blit(self.roundFont, (1200, 35))
             self.clock.tick(60)
             pygame.display.update()
 
