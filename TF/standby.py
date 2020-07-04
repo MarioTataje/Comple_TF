@@ -84,6 +84,7 @@ class Standby:
         self.grid_origin_computer_x = 17
         self.grid_origin_computer_y = 4
         self.solution = None;
+        self.there_is_winner = False;
 
     def text_objects(self, text, font):
         textSurface = font.render(text, True, self.white)
@@ -351,9 +352,10 @@ class Standby:
                     if self.count == 31:
                         self.computer_thinking = False
                         self.computer_found_solution = False
+                        self.there_is_winner = False
 
             self.button((self.screen_width * 0.5) - 50, 20, 100, 40, 'Tirar', self.throwDice)
-            self.button(50, 20, 100, 40, 'Gane', self.winPointPlayer)
+            #self.button(50, 20, 100, 40, 'Gane', self.winPointPlayer)
 
             grid_origin_player_x = 1
             grid_origin_player_y = 4
@@ -370,15 +372,16 @@ class Standby:
                 self.fire_and_forget(self.solve_puzzle);
 
             # Check if won
-            if self.check_won(self.player_tiles, grid_origin_player_x, grid_origin_player_y):
-                print('Player won')
+            if not self.there_is_winner:
+                if self.check_won(self.player_tiles, grid_origin_player_x, grid_origin_player_y):
+                    self.there_is_winner = True
+                    self.VerifyPlayerWin = True
+                    print('Player won')
 
-            if self.check_won(self.computer_tiles, self.grid_origin_computer_x, self.grid_origin_computer_y):
-                print('Computer won')
-                self.computer_won = True
-
-            if self.computer_won:
-                self.winPointMachine()
+                if self.check_won(self.computer_tiles, self.grid_origin_computer_x, self.grid_origin_computer_y):
+                    self.there_is_winner = True
+                    self.VerifyMachineWin = True
+                    print('Computer won')
 
             if self.Verify:
                 self.screen.blit(self.diceImage, ((self.screen_width * 0.50) - 35, self.screen_height * 0.15))
