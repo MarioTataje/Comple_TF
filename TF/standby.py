@@ -56,7 +56,7 @@ class Standby:
         self.VerifyPlayerWin = False
         self.VerifyMachineWin = False
         self.round = 0
-        self.count = 21
+        self.count = 31
         self.playerScore = 0
         self.machineScore = 0
         self.roundText = 'Ronda : '
@@ -335,7 +335,7 @@ class Standby:
                         self.count -= 1
                         self.countFont = self.myFont.render(str(self.count), 1, self.white)
                         if self.count == -1:
-                            self.count = 21
+                            self.count = 31
                             self.VerifyDice = False
                             self.round += 1
                             self.roundFont = self.myFont.render(str(self.round), 1, self.white)
@@ -355,11 +355,11 @@ class Standby:
             grid_origin_player_x = 1
             grid_origin_player_y = 4
 
-            if self.count < 21:
+            if self.count < 31:
                 self.start_round()
 
-            #if self.count == 21:
-            #    self.player_tiles = []
+            if self.count == 31:
+                self.player_tiles = []
 
             if not self.computer_thinking and not self.computer_found_solution:
                 self.computer_thinking = True;
