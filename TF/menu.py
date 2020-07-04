@@ -70,9 +70,9 @@ class Test:
                     if event.key == K_ESCAPE:
                         _running = False
 
-            self.button(330, 380, 130, 40, 'Play', startGame)
-            self.button(330, 440, 130, 40, 'Instructions', instructionsGame)
-            self.button(330, 500, 130, 40, 'Exit', exitGame)
+            self.button((self.screen_width/2) - 65, (self.screen_height/2) + 120, 130, 40, 'Play', startGame)
+            self.button((self.screen_width/2) - 65, (self.screen_height/2) + 180, 130, 40, 'Instructions', instructionsGame)
+            self.button((self.screen_width/2) - 65, (self.screen_height/2) + 240, 130, 40, 'Exit', exitGame)
             pygame.display.update()
 
         pygame.quit()

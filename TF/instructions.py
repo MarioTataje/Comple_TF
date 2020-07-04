@@ -60,7 +60,7 @@ class Instructions:
                     if event.key == K_ESCAPE:
                         _running = False
 
-            self.button(600, 30, 130, 40, 'Go', goGame)
+            self.button((self.screen_width/2) + 410, 30, 130, 40, 'Go', goGame)
             pygame.display.update()
 
         pygame.quit()

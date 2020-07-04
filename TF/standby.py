@@ -156,6 +156,13 @@ class Standby:
                             self.selected_tile_index = self.selected_tile_index + 1;
                             if self.selected_tile_index == len(self.player_tiles):
                                 self.selected_tile_index = 0;
+                if event.type == pygame.USEREVENT:
+                    if self.VerifyDice:
+                        self.count -= 1
+                        self.countFont = self.myFont.render(str(self.count), 1, self.white)
+                        if self.count == -1:
+                            self.count = 11
+                            self.VerifyDice = False
 
             self.button((self.screen_width * 0.5) - 50, 20, 100, 40, 'Tirar', self.throwDice)
 
