@@ -18,6 +18,7 @@ class Standby:
         self.gray = (128, 128, 128)
         self.newGray = (55, 118, 118)
         self.white = (255, 255, 255)
+        self.red = (255, 0, 0)
         self.black = (0, 0, 0)
         self.Verify = False
         self.diceImage = 0
@@ -52,6 +53,28 @@ class Standby:
         self.n = dice.drawDice()
         self.Verify = True
         self.diceImage = dice.dice
+
+        target = [
+            [1, 1, 1, 0, 0],
+            [1, 1, 1, 1, 1],
+            [0, 1, 1, 1, 1],
+            [0, 1, 1, 1, 0],
+            [1, 1, 1, 1, 1]
+         ]
+
+        sideLength = 40
+        row = 0
+        column = 0
+
+        for matrixRow in target:
+            for element in matrixRow:
+                if element != 0:
+                    pygame.draw.rect(self.screen, self.red, (column * sideLength, row * sideLength , sideLength, sideLength), 2)
+                column = column + 1
+            column = 0
+            row = row + 1
+
+
 
     def run(self, _running):
         while _running:
