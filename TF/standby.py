@@ -1,5 +1,9 @@
 import pygame
 import shapes
+import asyncio
+import random
+import time
+import computer_player
 from pygame.locals import (
     KEYDOWN,
     K_ESCAPE,
@@ -27,6 +31,7 @@ class Standby:
         self.white = (255, 255, 255)
         self.red = (255, 0, 0)
         self.green = (0, 255, 0)
+        self.blue = (0, 0, 255)
         self.black = (0, 0, 0)
         self.Verify = False
         self.side_length = 40
@@ -36,6 +41,9 @@ class Standby:
         self.player_tiles = []
         self.computer_tiles = []
         self.selected_tile_index = 0
+        self.computer_thinking = False
+        self.computer_found_solution = False
+        self.solution = None;
 
     def text_objects(self, text, font):
         textSurface = font.render(text, True, self.white)
@@ -92,21 +100,31 @@ class Standby:
             column = 0
             row = row + 1
 
-    def drawShape(self, shape_id, offset_x, offset_y):
-        sideLength = 40
+    def solve_puzzle(self):
+        print('hola')
+        matrix = [
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 1, 1],
+                [0, 1, 1, 1, 1],
+                [0, 1, 1, 1, 0],
+                [1, 1, 1, 1, 1]
+            ]
 
-        shape = shapes.generate_shape(shape_id);
-        for point in shape:
-            column = point[0]
-            row = point[1]
-            pygame.draw.rect(
-                        self.screen,
-                        self.green,
-                        (column * sideLength + offset_x, row * sideLength + offset_y, sideLength, sideLength),
-                        0
-                    )
+        sleepTime = random.randint(10, 30)
+        print('Sleeping for: ' + str(sleepTime));
+        time.sleep(sleepTime)
 
+        limit_tetris = {1: 1, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 1, 9: 0, 10: 0, 11: 0, 12: 0, 13: 1, 14: 0, 15: 0, 16: 0, 17: 0, 18: 1, 19: 0}
 
+        self.solution = computer_player.Tetris(matrix,limit_tetris);
+        self.computer_found_solution = True;
+
+    def fire_and_forget(self, task, *args, **kwargs):
+        loop = asyncio.get_event_loop()
+        if callable(task):
+            return loop.run_in_executor(None, task, *args, **kwargs)
+        else:    
+            raise TypeError('Task must be a callable')
 
     def run(self, _running):
         while _running:
@@ -139,25 +157,65 @@ class Standby:
                 [0, 1, 1, 1, 0],
                 [1, 1, 1, 1, 1]
             ]
-            self.drawGrid(matrix, self.screen_width * 0.1, self.screen_height * 0.3)
-            self.drawGrid(matrix, self.screen_width * 0.65, self.screen_height * 0.3)
+
+            grid_origin_player_x = 1;
+            grid_origin_player_y = 4;
+            grid_origin_computer_x = 17;
+            grid_origin_computer_y = 4;
+
+            self.drawGrid(matrix, grid_origin_player_x * self.side_length, grid_origin_player_y * self.side_length)
+            self.drawGrid(matrix, grid_origin_computer_x * self.side_length, grid_origin_computer_y * self.side_length)
 
             limit_tetris = {1: 1, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 1, 9: 0, 10: 0, 11: 0, 12: 0, 13: 1, 14: 0, 15: 0, 16: 0, 17: 0, 18: 1, 19: 0}
 
             if(len(self.player_tiles) == 0):
-                shape_offset_x = self.screen_width*0.1
-                distance_shape = 5 * 40
+                shape_offset_x = grid_origin_player_x * self.side_length
+                distance_shape = 4 * self.side_length
                 for key,value in limit_tetris.items():
                     if value != 0:
                         shape = shapes.generate_shape(key);
                         #get color from shape colors 
-                        new_tile = Tile(self.screen, shape, self.green, shape_offset_x, self.screen_height * 0.8,self.side_length)
+                        new_tile = Tile(self.screen, shape, self.green, shape_offset_x, (grid_origin_player_y + 10) * self.side_length,self.side_length)
                         new_tile.draw_shape();
                         shape_offset_x = shape_offset_x + distance_shape
                         self.player_tiles.append(new_tile);
             else:
                 for tile in self.player_tiles:
                     tile.draw_shape();
+                        
+
+            if(not self.computer_found_solution):
+                shape_offset_x = grid_origin_computer_x * self.side_length
+                distance_shape = 4 * self.side_length
+                for key,value in limit_tetris.items():
+                    if value != 0:
+                        shape = shapes.generate_shape(key);
+                        #get color from shape colors 
+                        new_tile = Tile(self.screen, shape, self.red, shape_offset_x, (grid_origin_player_y + 10) * self.side_length,self.side_length)
+                        new_tile.draw_shape();
+                        shape_offset_x = shape_offset_x + distance_shape
+            else:
+                offsetX = self.side_length * grid_origin_computer_x;
+                offsetY = self.side_length * grid_origin_computer_y;
+                row = 0
+                column = 0
+
+                for solution_row in self.solution:
+                    for solution_column in solution_row:
+                        if(solution_column[0] != 0):
+                            pygame.draw.rect(
+                                self.screen,
+                                self.blue,
+                                (column * self.side_length + offsetX, row * self.side_length + offsetY, self.side_length, self.side_length),
+                                0
+                            )
+                        column = column+1;
+                    column = 0
+                    row = row+1;
+
+            if(not self.computer_thinking and not self.computer_found_solution):
+                self.computer_thinking = True;
+                self.fire_and_forget(self.solve_puzzle);
 
             if self.Verify:
                 self.screen.blit(self.diceImage, ((self.screen_width * 0.50) - 35, self.screen_height * 0.15))
