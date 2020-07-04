@@ -37,6 +37,7 @@ class Standby:
         self.black = (0, 0, 0)
         self.Verify = False
         self.VerifyDice = False
+        self.VerifyPlayerWin = False
         self.round = 0
         self.count = 21
         self.playerScore = 0
@@ -100,8 +101,7 @@ class Standby:
         self.VerifyDice = True
 
     def winPointPlayer(self):
-        self.playerScore += 1
-        self.playerScoreFont = self.myFont.render(str(self.playerScore), 1, self.white)
+        self.VerifyPlayerWin = True
 
     def drawGrid(self, matrix, offsetX, offsetY):
         sideLength = 40
@@ -207,8 +207,6 @@ class Standby:
             column = 0;
             row = row + 1;
 
-
-
     def check_won(self,current_tiles,origin_x, origin_y):
         #no podemos verificar quien gano hasta que tengamos solucion
         if(self.solution == None):
@@ -281,6 +279,10 @@ class Standby:
                             self.VerifyDice = False
                             self.round += 1
                             self.roundFont = self.myFont.render(str(self.round), 1, self.white)
+                    if self.VerifyPlayerWin:
+                        self.playerScore += 1
+                        self.playerScoreFont = self.myFont.render(str(self.playerScore), 1, self.white)
+                        self.VerifyPlayerWin = False
 
             self.button((self.screen_width * 0.5) - 50, 20, 100, 40, 'Tirar', self.throwDice)
             self.button(50, 20, 100, 40, 'Gane', self.winPointPlayer)
