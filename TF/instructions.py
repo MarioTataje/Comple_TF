@@ -3,11 +3,14 @@ from pygame.locals import (
     KEYDOWN,
     K_ESCAPE
 )
+
+import utils
 from standby import Standby
 
 
 def goGame():
-    go = Standby(800, 600)
+    screen_dimensions = utils.get_screen_dimensions()
+    go = Standby(screen_dimensions['width'], screen_dimensions['height'])
     go.run(True)
 
 

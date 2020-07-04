@@ -32,6 +32,7 @@ class Test:
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
         self.tittle = pygame.display.set_caption("Ubongo")
         self.image = pygame.image.load("ubongo.png")
+        self.scaledImage = pygame.transform.scale(self.image, (self.screen_width, self.screen_height))
         self.gray = (128, 128, 128)
         self.newGray = (55, 118, 118)
         self.white = (255, 255, 255)
@@ -63,7 +64,7 @@ class Test:
 
     def run(self, _running):
         while _running:
-            self.screen.blit(self.image, (0, 0))
+            self.screen.blit(self.scaledImage, (0, 0))
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
