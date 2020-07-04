@@ -34,18 +34,22 @@ class Standby:
         self.blue = (0, 0, 255)
         self.black = (0, 0, 0)
         self.Verify = False
+        self.VerifyDice = False
         self.round = 0
+        self.count = 21
+        self.playerScore = 0
+        self.machineScore = 0
         self.roundText = 'Ronda : '
         self.playerScoreText = 'Puntaje Jugador : '
         self.machineScoreText = 'Puntaje Maquina : '
-        self.count = 21
         self.myFont = pygame.font.SysFont('comicsans', 30)
+        self.countFont = self.myFont.render(str(self.count), 1, self.white)
         self.roundFont = self.myFont.render(str(self.round), 1, self.white)
         self.roundTextFont = self.myFont.render(self.roundText, 1, self.white)
-        self.countFont = self.myFont.render(str(self.count), 1, self.white)
+        self.playerScoreFont = self.myFont.render(str(self.playerScore), 1, self.white)
         self.playerScoreTextFont = self.myFont.render(self.playerScoreText, 1, self.white)
+        self.machineScoreFont = self.myFont.render(str(self.machineScore), 1, self.white)
         self.machineScoreTextFont = self.myFont.render(self.machineScoreText, 1, self.white)
-        self.VerifyDice = False
         self.clock = pygame.time.Clock()
         self.side_length = 40
         self.diceImage = 0
@@ -89,6 +93,10 @@ class Standby:
         self.Verify = True
         self.diceImage = dice.dice
         self.VerifyDice = True
+
+    def winPointPlayer(self):
+        self.playerScore += 1
+        self.playerScoreFont = self.myFont.render(str(self.playerScore), 1, self.white)
 
     def drawGrid(self, matrix, offsetX, offsetY):
         sideLength = 40
@@ -175,6 +183,7 @@ class Standby:
                             self.roundFont = self.myFont.render(str(self.round), 1, self.white)
 
             self.button((self.screen_width * 0.5) - 50, 20, 100, 40, 'Tirar', self.throwDice)
+            self.button(50, 20, 100, 40, 'Gane', self.winPointPlayer)
 
             matrix = [
                 [0, 0, 1, 0, 0],
@@ -254,7 +263,10 @@ class Standby:
             self.screen.blit(self.roundTextFont, (1100, 35))
             self.screen.blit(self.roundFont, (1200, 35))
             self.screen.blit(self.playerScoreTextFont, (50, 100))
+            self.playerScoreTextFont = self.myFont.render(self.playerScoreText, 1, self.white)
+            self.screen.blit(self.playerScoreFont, (250, 100))
             self.screen.blit(self.machineScoreTextFont, (800, 100))
+            self.screen.blit(self.machineScoreFont, (1000, 100))
             self.clock.tick(60)
             pygame.display.update()
 
