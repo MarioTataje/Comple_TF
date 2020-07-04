@@ -126,6 +126,7 @@ class Standby:
                         16: 0, 17: 0, 18: 1, 19: 0}
 
         self.solution = computer_player.Tetris(matrix, limit_tetris);
+        print('Found solution')
         self.computer_found_solution = True;
 
     def fire_and_forget(self, task, *args, **kwargs):
@@ -191,8 +192,8 @@ class Standby:
                 for key, value in limit_tetris.items():
                     if value != 0:
                         shape = shapes.generate_shape(key);
-                        # get color from shape colors
-                        new_tile = Tile(self.screen, shape, self.green, shape_offset_x,
+                        color = shapes.get_shape_color(key);
+                        new_tile = Tile(self.screen, shape, color, shape_offset_x,
                                         (grid_origin_player_y + 10) * self.side_length, self.side_length)
                         new_tile.draw_shape();
                         shape_offset_x = shape_offset_x + distance_shape
@@ -202,16 +203,21 @@ class Standby:
                     tile.draw_shape();
 
             if not self.computer_found_solution:
-                shape_offset_x = grid_origin_computer_x * self.side_length
-                distance_shape = 4 * self.side_length
-                for key, value in limit_tetris.items():
-                    if value != 0:
-                        shape = shapes.generate_shape(key);
-                        # get color from shape colors
-                        new_tile = Tile(self.screen, shape, self.red, shape_offset_x,
-                                        (grid_origin_player_y + 10) * self.side_length, self.side_length)
-                        new_tile.draw_shape();
-                        shape_offset_x = shape_offset_x + distance_shape
+                if(len(self.computer_tiles) == 0):
+                    shape_offset_x = grid_origin_computer_x * self.side_length
+                    distance_shape = 4 * self.side_length
+                    for key, value in limit_tetris.items():
+                        if value != 0:
+                            shape = shapes.generate_shape(key);
+                            color = shapes.get_shape_color(key);
+                            new_tile = Tile(self.screen, shape, color, shape_offset_x,
+                                            (grid_origin_player_y + 10) * self.side_length, self.side_length)
+                            new_tile.draw_shape();
+                            shape_offset_x = shape_offset_x + distance_shape
+                            self.computer_tiles.append(new_tile);
+                else:
+                    for tile in self.computer_tiles:
+                        tile.draw_shape();
             else:
                 offsetX = self.side_length * grid_origin_computer_x;
                 offsetY = self.side_length * grid_origin_computer_y;

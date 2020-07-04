@@ -11,6 +11,8 @@ class Tile:
         self.side_length = side_length
 
     def draw_shape(self):
+        border = 2;
+
         for point in self.shape:
             column = point[1]
             row = point[0]
@@ -20,6 +22,13 @@ class Tile:
                         (column * self.side_length + self.offset_x, row * self.side_length + self.offset_y, self.side_length, self.side_length),
                         0
                     )
+            pygame.draw.rect(
+                        self.screen,
+                        (0,0,0),
+                        (column * self.side_length + self.offset_x, row * self.side_length + self.offset_y, self.side_length, self.side_length),
+                        1
+                    )
+
         
     def move_shape(self, move_x, move_y):
         self.offset_x = self.offset_x + move_x * self.side_length

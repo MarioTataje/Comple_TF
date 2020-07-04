@@ -1,7 +1,4 @@
 def generate_shape(shape_id):
-    """
-    Utility function called by generate_target
-    """
     shape = None
     if shape_id == 1:
         shape = [[0, 0], [0, 1], [1, 0], [1, 1]]
@@ -42,3 +39,45 @@ def generate_shape(shape_id):
     elif shape_id == 19:
         shape = [[0, 0], [1, -1], [1, 0], [2, -1]]
     return shape
+
+def get_shape_color(shape_id):
+    color = None
+    if shape_id == 1:
+        color = (255, 255, 0)
+    elif shape_id == 2:
+        color = (0, 255, 255)
+    elif shape_id == 3:
+        color = (0, 255, 255)
+    elif shape_id == 4:
+        color = (255, 128, 0)
+    elif shape_id == 5:
+        color = (255, 128, 0)
+    elif shape_id == 6:
+        color = (255, 128, 0)
+    elif shape_id == 7:
+        color = (255, 128, 0)
+    elif shape_id == 8:
+        color = (255, 128, 0)
+    elif shape_id == 9:
+        color = (255, 128, 0)
+    elif shape_id == 10:
+        color = (255, 128, 0)
+    elif shape_id == 11:
+        color = (255, 0, 0)
+    elif shape_id == 12:
+        color = (255, 0, 0)
+    elif shape_id == 13:
+        color = (128, 0, 255)
+    elif shape_id == 14:
+        color = (255, 0, 0)
+    elif shape_id == 15:
+        color = (255, 0, 0)
+    elif shape_id == 16:
+        color = (255, 0, 0)
+    elif shape_id == 17:
+        color = (255, 0, 0)
+    elif shape_id == 18:
+        color = (255, 0, 0)
+    elif shape_id == 19:
+        color = (255, 0, 0)
+    return color
