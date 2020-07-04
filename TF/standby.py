@@ -38,6 +38,7 @@ class Standby:
         self.myFont = pygame.font.SysFont('comicsans', 30)
         self.countFont = self.myFont.render(str(self.count), 1, self.white)
         self.VerifyDice = False
+        self.clock = pygame.time.Clock()
         self.side_length = 40
         self.diceImage = 0
         self.n = 0
@@ -132,6 +133,8 @@ class Standby:
             raise TypeError('Task must be a callable')
 
     def run(self, _running):
+        self.clock = pygame.time.Clock()
+        pygame.time.set_timer(pygame.USEREVENT, 1000)
         while _running:
             self.screen.blit(self.scaledImage, (0, 0))
             for event in pygame.event.get():
