@@ -269,6 +269,46 @@ class Standby:
         else:
             raise TypeError('Task must be a callable')
 
+    def start_round(self):
+        grid_origin_player_x = 1
+        grid_origin_player_y = 4
+
+        self.drawGrid(self.target, grid_origin_player_x * self.side_length, grid_origin_player_y * self.side_length)
+        self.drawGrid(self.target, self.grid_origin_computer_x * self.side_length,
+                      self.grid_origin_computer_y * self.side_length)
+
+        if len(self.player_tiles) == 0:
+            shape_offset_x = grid_origin_player_x * self.side_length
+            distance_shape = 4 * self.side_length
+            for key, value in self.pieces.items():
+                if value != 0:
+                    shape = shapes.generate_shape(key)
+                    color = shapes.get_shape_color(key)
+                    new_tile = Tile(self.screen, shape, color, shape_offset_x,
+                                    (grid_origin_player_y + 10) * self.side_length, self.side_length, key)
+                    new_tile.draw_shape()
+                    shape_offset_x = shape_offset_x + distance_shape
+                    self.player_tiles.append(new_tile)
+        else:
+            for tile in self.player_tiles:
+                tile.draw_shape()
+
+        if len(self.computer_tiles) == 0:
+            shape_offset_x = self.grid_origin_computer_x * self.side_length
+            distance_shape = 4 * self.side_length
+            for key, value in self.pieces.items():
+                if value != 0:
+                    shape = shapes.generate_shape(key)
+                    color = shapes.get_shape_color(key)
+                    new_tile = Tile(self.screen, shape, color, shape_offset_x,
+                                    (grid_origin_player_y + 10) * self.side_length, self.side_length, key)
+                    new_tile.draw_shape()
+                    shape_offset_x = shape_offset_x + distance_shape
+                    self.computer_tiles.append(new_tile)
+        else:
+            for tile in self.computer_tiles:
+                tile.draw_shape()
+
     def run(self, _running):
         self.clock = pygame.time.Clock()
         pygame.time.set_timer(pygame.USEREVENT, 1000)
@@ -315,63 +355,11 @@ class Standby:
             grid_origin_player_x = 1
             grid_origin_player_y = 4
 
-            self.drawGrid(self.target, grid_origin_player_x * self.side_length, grid_origin_player_y * self.side_length)
-            self.drawGrid(self.target, self.grid_origin_computer_x * self.side_length,
-                          self.grid_origin_computer_y * self.side_length)
+            if self.count < 21:
+                self.start_round()
 
-            if len(self.player_tiles) == 0:
-                shape_offset_x = grid_origin_player_x * self.side_length
-                distance_shape = 4 * self.side_length
-                for key, value in self.pieces.items():
-                    if value != 0:
-                        shape = shapes.generate_shape(key)
-                        color = shapes.get_shape_color(key)
-                        new_tile = Tile(self.screen, shape, color, shape_offset_x,
-                                        (grid_origin_player_y + 10) * self.side_length, self.side_length, key)
-                        new_tile.draw_shape()
-                        shape_offset_x = shape_offset_x + distance_shape
-                        self.player_tiles.append(new_tile)
-            else:
-                for tile in self.player_tiles:
-                    tile.draw_shape()
-
-            if len(self.computer_tiles) == 0:
-                shape_offset_x = self.grid_origin_computer_x * self.side_length
-                distance_shape = 4 * self.side_length
-                for key, value in self.pieces.items():
-                    if value != 0:
-                        shape = shapes.generate_shape(key)
-                        color = shapes.get_shape_color(key)
-                        new_tile = Tile(self.screen, shape, color, shape_offset_x,
-                                        (grid_origin_player_y + 10) * self.side_length, self.side_length, key)
-                        new_tile.draw_shape()
-                        shape_offset_x = shape_offset_x + distance_shape
-                        self.computer_tiles.append(new_tile)
-            else:
-                for tile in self.computer_tiles:
-                    tile.draw_shape()
-            # if not self.computer_found_solution:
-
-            # else:
-            #    offsetX = self.side_length * self.grid_origin_computer_x;
-            #    offsetY = self.side_length * self.grid_origin_computer_y;
-            #    row = 0
-            #    column = 0
-
-            #    for solution_row in self.solution:
-            #        for solution_column in solution_row:
-            #            if solution_column[0] != 0:
-            #                pygame.draw.rect(
-            #                    self.screen,
-            #                    self.blue,
-            #                    (
-            #                    column * self.side_length + offsetX, row * self.side_length + offsetY, self.side_length,
-            #                    self.side_length),
-            #                    0
-            #                )
-            #            column = column + 1;
-            #        column = 0
-            #        row = row + 1;
+            #if self.count == 21:
+            #    self.player_tiles = []
 
             if not self.computer_thinking and not self.computer_found_solution:
                 self.computer_thinking = True;
