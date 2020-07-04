@@ -13,8 +13,24 @@ from pygame.locals import (
     K_LEFT,
     K_SPACE
 )
+
+import utils
 from dice import Dice
 from tile import Tile
+from win import Win
+from lose import Lose
+
+
+def WinGame():
+    screen_dimensions = utils.get_screen_dimensions()
+    winPlayer = Win(screen_dimensions['width'], screen_dimensions['height'])
+    winPlayer.run(True)
+
+
+def LoseGame():
+    screen_dimensions = utils.get_screen_dimensions()
+    losePlayer = Lose(screen_dimensions['width'], screen_dimensions['height'])
+    losePlayer.run(True)
 
 
 class Standby:
@@ -134,32 +150,32 @@ class Standby:
             row = row + 1
 
     def solve_puzzle(self):
-        self.solution = computer_player.Tetris(self.target, self.pieces);
+        self.solution = computer_player.Tetris(self.target, self.pieces)
 
         sleepTime = random.randint(2, 5)
-        print('Sleeping for: ' + str(sleepTime));
+        print('Sleeping for: ' + str(sleepTime))
         time.sleep(sleepTime)
 
         print('Found solution')
-        self.computer_found_solution = True;
-        self.computer_move_tiles();
+        self.computer_found_solution = True
+        self.computer_move_tiles()
 
     def create_empty_solution(self):
-        empty_solution = [];
+        empty_solution = []
 
         for row in self.target:
-            new_row = [];
+            new_row = []
             for column in row:
-                new_row.append(0);
-            empty_solution.append(new_row);
+                new_row.append(0)
+            empty_solution.append(new_row)
 
-        return empty_solution;
+        return empty_solution
 
     def computer_move_tiles(self):
-        if (self.computer_won):
-            return;
+        if self.computer_won:
+            return
 
-        time.sleep(0.5);
+        time.sleep(0.5)
 
         row = 0
         column = 0
@@ -172,7 +188,7 @@ class Standby:
                 if shape_id != 0 and not shape_id in shapes_moved:
                     for tile in self.computer_tiles:
                         tile_number = tile.get_tile_number()
-                        if (tile_number == shape_id):
+                        if tile_number == shape_id:
                             shapes_moved.append(shape_id)
                             occupied_tiles = tile.return_occupied_tiles(self.grid_origin_computer_x,
                                                                         self.grid_origin_computer_y)
@@ -181,42 +197,42 @@ class Standby:
                             current_smallest_x = current_left_top[0]
 
                             for point in occupied_tiles:
-                                if (point[1] < current_smallest_y):
-                                    current_left_top = point;
+                                if point[1] < current_smallest_y:
+                                    current_left_top = point
                                     current_smallest_y = current_left_top[1]
                                     current_smallest_x = current_left_top[0]
                                 else:
-                                    if (point[1] == current_smallest_y):
-                                        if (point[0] < current_smallest_x):
-                                            current_left_top = point;
+                                    if point[1] == current_smallest_y:
+                                        if point[0] < current_smallest_x:
+                                            current_left_top = point
                                             current_smallest_y = current_left_top[1]
                                             current_smallest_x = current_left_top[0]
 
-                            if (current_left_top[1] > row):
+                            if current_left_top[1] > row:
                                 tile.move_shape(0, -1)
-                                self.computer_move_tiles();
-                                return;
+                                self.computer_move_tiles()
+                                return
 
-                            if (current_left_top[0] > column):
+                            if current_left_top[0] > column:
                                 tile.move_shape(-1, 0)
-                                self.computer_move_tiles();
-                                return;
+                                self.computer_move_tiles()
+                                return
 
-                            if (current_left_top[0] < column):
+                            if current_left_top[0] < column:
                                 tile.move_shape(1, 0)
-                                self.computer_move_tiles();
-                                return;
+                                self.computer_move_tiles()
+                                return
 
-                column = column + 1;
-            column = 0;
-            row = row + 1;
+                column = column + 1
+            column = 0
+            row = row + 1
 
     def check_won(self, current_tiles, origin_x, origin_y):
         # no podemos verificar quien gano hasta que tengamos solucion
-        if (self.solution == None):
-            return False;
+        if self.solution is None:
+            return False
 
-        current_solution = self.create_empty_solution();
+        current_solution = self.create_empty_solution()
 
         for tile in current_tiles:
             occupied_tiles = tile.return_occupied_tiles(origin_x, origin_y)
@@ -224,27 +240,27 @@ class Standby:
             for occupied in occupied_tiles:
                 x = int(occupied[0])
                 y = int(occupied[1])
-                if (x >= len(self.target[0]) or x < 0):
-                    return False;
+                if x >= len(self.target[0]) or x < 0:
+                    return False
 
-                if (y >= len(self.target) or y < 0):
-                    return False;
+                if y >= len(self.target) or y < 0:
+                    return False
 
                 current_solution[y][x] = tile_number
 
-        row = 0;
-        column = 0;
+        row = 0
+        column = 0
 
         for solution_row in self.solution:
             for solution_column in solution_row:
-                matching_shape_id = current_solution[row][column];
-                if (matching_shape_id != solution_column[0]):
-                    return False;
-                column = column + 1;
-            column = 0;
-            row = row + 1;
+                matching_shape_id = current_solution[row][column]
+                if matching_shape_id != solution_column[0]:
+                    return False
+                column = column + 1
+            column = 0
+            row = row + 1
 
-        return True;
+        return True
 
     def fire_and_forget(self, task, *args, **kwargs):
         loop = asyncio.get_event_loop()
@@ -263,17 +279,17 @@ class Standby:
                     if self.playing:
                         selected_tile = self.player_tiles[self.selected_tile_index]
                         if event.key == K_UP:
-                            selected_tile.move_shape(0, -1);
+                            selected_tile.move_shape(0, -1)
                         if event.key == K_DOWN:
-                            selected_tile.move_shape(0, 1);
+                            selected_tile.move_shape(0, 1)
                         if event.key == K_LEFT:
-                            selected_tile.move_shape(-1, 0);
+                            selected_tile.move_shape(-1, 0)
                         if event.key == K_RIGHT:
-                            selected_tile.move_shape(1, 0);
+                            selected_tile.move_shape(1, 0)
                         if event.key == K_SPACE:
-                            self.selected_tile_index = self.selected_tile_index + 1;
+                            self.selected_tile_index = self.selected_tile_index + 1
                             if self.selected_tile_index == len(self.player_tiles):
-                                self.selected_tile_index = 0;
+                                self.selected_tile_index = 0
                 if event.type == pygame.USEREVENT:
                     if self.VerifyDice:
                         self.count -= 1
@@ -308,32 +324,32 @@ class Standby:
                 distance_shape = 4 * self.side_length
                 for key, value in self.pieces.items():
                     if value != 0:
-                        shape = shapes.generate_shape(key);
-                        color = shapes.get_shape_color(key);
+                        shape = shapes.generate_shape(key)
+                        color = shapes.get_shape_color(key)
                         new_tile = Tile(self.screen, shape, color, shape_offset_x,
                                         (grid_origin_player_y + 10) * self.side_length, self.side_length, key)
-                        new_tile.draw_shape();
+                        new_tile.draw_shape()
                         shape_offset_x = shape_offset_x + distance_shape
-                        self.player_tiles.append(new_tile);
+                        self.player_tiles.append(new_tile)
             else:
                 for tile in self.player_tiles:
-                    tile.draw_shape();
+                    tile.draw_shape()
 
             if len(self.computer_tiles) == 0:
                 shape_offset_x = self.grid_origin_computer_x * self.side_length
                 distance_shape = 4 * self.side_length
                 for key, value in self.pieces.items():
                     if value != 0:
-                        shape = shapes.generate_shape(key);
-                        color = shapes.get_shape_color(key);
+                        shape = shapes.generate_shape(key)
+                        color = shapes.get_shape_color(key)
                         new_tile = Tile(self.screen, shape, color, shape_offset_x,
                                         (grid_origin_player_y + 10) * self.side_length, self.side_length, key)
-                        new_tile.draw_shape();
+                        new_tile.draw_shape()
                         shape_offset_x = shape_offset_x + distance_shape
-                        self.computer_tiles.append(new_tile);
+                        self.computer_tiles.append(new_tile)
             else:
                 for tile in self.computer_tiles:
-                    tile.draw_shape();
+                    tile.draw_shape()
             # if not self.computer_found_solution:
 
             # else:
@@ -363,11 +379,11 @@ class Standby:
 
             # Check if won
             if self.check_won(self.player_tiles, grid_origin_player_x, grid_origin_player_y):
-                print('Player won');
+                print('Player won')
 
             if self.check_won(self.computer_tiles, self.grid_origin_computer_x, self.grid_origin_computer_y):
-                print('Computer won');
-                self.computer_won = True;
+                print('Computer won')
+                self.computer_won = True
 
             if self.computer_won:
                 self.winPointMachine()
