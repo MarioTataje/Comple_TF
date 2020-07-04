@@ -95,6 +95,8 @@ class Standby:
                         0
                     )
 
+
+
     def run(self, _running):
         while _running:
             self.screen.blit(self.scaledImage, (0, 0))
@@ -115,7 +117,15 @@ class Standby:
             self.drawGrid(matrix, self.screen_width * 0.1, self.screen_height * 0.3)
             self.drawGrid(matrix, self.screen_width * 0.65, self.screen_height * 0.3)
 
-            self.drawShape(5, self.screen_width * 0.1, self.screen_height * 0.8)
+            limit_tetris = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 1, 9: 0, 10: 0, 11: 0, 12: 0, 13: 1, 14: 0,
+                            15: 0, 16: 0, 17: 0, 18: 1, 19: 0}
+
+            shape_offset_x = self.screen_width*0.1
+            distance_shape = 5 * 40
+            for key,value in limit_tetris.items():
+                if value != 0:
+                    self.drawShape(key, shape_offset_x, self.screen_height * 0.8)
+                    shape_offset_x = shape_offset_x + distance_shape
 
 
             if self.Verify:
