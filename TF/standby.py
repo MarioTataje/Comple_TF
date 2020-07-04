@@ -38,6 +38,7 @@ class Standby:
         self.Verify = False
         self.VerifyDice = False
         self.VerifyPlayerWin = False
+        self.VerifyMachineWin = False
         self.round = 0
         self.count = 21
         self.playerScore = 0
@@ -102,6 +103,9 @@ class Standby:
 
     def winPointPlayer(self):
         self.VerifyPlayerWin = True
+
+    def winPointMachine(self):
+        self.VerifyMachineWin = True
 
     def drawGrid(self, matrix, offsetX, offsetY):
         sideLength = 40
@@ -283,6 +287,10 @@ class Standby:
                         self.playerScore += 1
                         self.playerScoreFont = self.myFont.render(str(self.playerScore), 1, self.white)
                         self.VerifyPlayerWin = False
+                    if self.VerifyMachineWin:
+                        self.machineScore += 1
+                        self.machineScoreFont = self.myFont.render(str(self.machineScore), 1, self.white)
+                        self.VerifyMachineWin = True
 
             self.button((self.screen_width * 0.5) - 50, 20, 100, 40, 'Tirar', self.throwDice)
             self.button(50, 20, 100, 40, 'Gane', self.winPointPlayer)
