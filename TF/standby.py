@@ -387,6 +387,12 @@ class Standby:
                 self.screen.blit(self.diceImage, ((self.screen_width * 0.50) - 35, self.screen_height * 0.15))
             if self.VerifyDice:
                 self.screen.blit(self.countFont, (1000, 35))
+            if self.round == 4:
+                if self.playerScore > self.machineScore:
+                    WinGame()
+                else:
+                    LoseGame()
+
             self.screen.blit(self.roundTextFont, (1100, 35))
             self.screen.blit(self.roundFont, (1200, 35))
             self.screen.blit(self.playerScoreTextFont, (50, 100))
