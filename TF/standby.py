@@ -55,7 +55,7 @@ class Standby:
         self.VerifyDice = False
         self.VerifyPlayerWin = False
         self.VerifyMachineWin = False
-        self.round = 0
+        self.round = 1
         self.count = 31
         self.playerScore = 0
         self.machineScore = 0
